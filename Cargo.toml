@@ -1,0 +1,10 @@
+[package]
+name = "toggl-to-logjammin"
+version = "0.1.0"
+authors = ["Alex Luecke <alex.james.luecke@gmail.com>"]
+
+[dependencies]
+csv = "1.0.0-beta.5"
+serde = "1.0"
+serde_derive = "1.0"
+
