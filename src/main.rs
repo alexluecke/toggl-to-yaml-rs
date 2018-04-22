@@ -26,7 +26,13 @@ struct TogglRecord {
 #[derive(Debug, Serialize, Deserialize)]
 struct Bucket {
     ticket: String,
-    time: String
+    time: Time
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Time {
+    hours: i32,
+    minutes: i32
 }
 
 fn main() {
@@ -34,7 +40,7 @@ fn main() {
     let mut i = 0;
 
     for record in get_records(&get_options()).unwrap() {
-        let hour_minute: Vec<i32> = match record.duration {
+        let hours_minutes: Vec<i32> = match record.duration {
             Some(v) => {
                 v.split(":").take(2).map(|e| e.parse::<i32>().unwrap()).collect::<Vec<i32>>()
             },
@@ -44,14 +50,17 @@ fn main() {
             }
         };
 
-        if hour_minute.len() != 2 {
+        if hours_minutes.len() != 2 {
             print_msg("Duration", i);
             std::process::exit(1);
         }
 
         let time_bucket = Bucket {
             ticket: record.description.unwrap(),
-            time: format!("{}h {}m", hour_minute[0], hour_minute[1])
+            time: Time {
+                hours: hours_minutes[0],
+                minutes: hours_minutes[1]
+            }
         };
 
         match record.start_date {
