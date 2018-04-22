@@ -7,7 +7,6 @@ extern crate getopts;
 extern crate csv;
 
 use getopts::Options;
-use serde::ser::Serialize;
 use std::collections::HashMap;
 use std::collections::hash_map::Entry;
 use std::env;
@@ -30,13 +29,9 @@ struct Bucket {
     time: String
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
-struct DateMap {
-    data: HashMap<String, Vec<Bucket>>
-}
 
 fn main() {
-    let mut date_map = DateMap::default();
+    let mut date_map = HashMap::<String, Vec<Bucket>>::new();
     let mut i = 0;
 
     for record in get_records().unwrap() {
@@ -61,7 +56,7 @@ fn main() {
         };
 
         match record.start_date {
-            Some(key) => match date_map.data.entry(key) {
+            Some(key) => match date_map.entry(key) {
                 Entry::Occupied(mut entry) => { entry.get_mut().push(time_bucket); },
                 Entry::Vacant(entry) => { entry.insert(vec![time_bucket]); }
             },
@@ -73,7 +68,7 @@ fn main() {
         i += 1;
     }
 
-    println!("{}", serde_yaml::to_string(&date_map.data).unwrap());
+    println!("{}", serde_yaml::to_string(&date_map).unwrap());
 }
 
 fn get_records() -> Result<Vec<TogglRecord>, Box<Error>> {
