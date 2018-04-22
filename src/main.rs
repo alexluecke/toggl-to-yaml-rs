@@ -1,15 +1,18 @@
 #[macro_use]
 extern crate serde_derive;
+
 extern crate serde;
 extern crate serde_yaml;
-
+extern crate getopts;
 extern crate csv;
 
-use serde::ser::{Serialize, Serializer};
+use getopts::Options;
+use serde::ser::Serialize;
 use std::collections::HashMap;
-use std::collections::hash_map::{Entry};
-use std::fs;
+use std::collections::hash_map::Entry;
+use std::env;
 use std::error::Error;
+use std::fs;
 
 #[derive(Debug,Deserialize)]
 struct TogglRecord {
@@ -74,10 +77,35 @@ fn main() {
 }
 
 fn get_records() -> Result<Vec<TogglRecord>, Box<Error>> {
-    let file = fs::File::open("./files/toggl.csv").expect("File not found.");
-    Ok(csv::Reader::from_reader(file).deserialize().filter_map(|r| r.ok()).collect())
+    let args: Vec<String> = env::args().collect();
+    let program = args[0].clone();
+
+    let mut opts = Options::new();
+    opts.optopt("f", "file", "toggl csv file", "FILE");
+    opts.optflag("h", "help", "print this help menu");
+
+    let matches = match opts.parse(&args[1..]) {
+        Ok(m) => { m },
+        Err(f) => { panic!(f.to_string()) }
+    };
+
+    match matches.opt_str("file") {
+        Some(file) => {
+            let reader = fs::File::open(file).expect("File not found.");
+            Ok(csv::Reader::from_reader(reader).deserialize().filter_map(|r| r.ok()).collect())
+        }
+        None => {
+            print_usage(&program, opts);
+            std::process::exit(1);
+        }
+    }
 }
 
 fn print_msg(field: &str, row: i32) {
     println!("Could not parse field {} for row {}.", field, row);
+}
+
+fn print_usage(program: &str, opts: Options) {
+    let brief = format!("Usage: {} FILE [options]", program);
+    print!("{}", opts.usage(&brief));
 }
