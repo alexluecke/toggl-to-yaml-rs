@@ -13,33 +13,33 @@ use std::error::Error;
 
 #[derive(Debug,Deserialize)]
 struct TogglRecord {
-    #[serde(rename(serialize = "user", deserialize = "User"))]
+    #[serde(rename(deserialize = "User"))]
     user: Option<String>,
-    #[serde(rename(serialize = "email", deserialize = "Email"))]
+    #[serde(rename(deserialize = "Email"))]
     email: Option<String>,
-    #[serde(rename(serialize = "client", deserialize = "Client"))]
+    #[serde(rename(deserialize = "Client"))]
     client: Option<String>,
-    #[serde(rename(serialize = "project", deserialize = "Project"))]
+    #[serde(rename(deserialize = "Project"))]
     project: Option<String>,
-    #[serde(rename(serialize = "task", deserialize = "Task"))]
+    #[serde(rename(deserialize = "Task"))]
     task: Option<String>,
-    #[serde(rename(serialize = "description", deserialize = "Description"))]
+    #[serde(rename(deserialize = "Description"))]
     description: Option<String>,
-    #[serde(rename(serialize = "billable", deserialize = "Billable"))]
+    #[serde(rename(deserialize = "Billable"))]
     billable: Option<String>,
-    #[serde(rename(serialize = "start_date", deserialize = "Start date"))]
+    #[serde(rename(deserialize = "Start date"))]
     start_date: Option<String>,
-    #[serde(rename(serialize = "start_time", deserialize = "Start time"))]
+    #[serde(rename(deserialize = "Start time"))]
     start_time: Option<String>,
-    #[serde(rename(serialize = "end_date", deserialize = "End date"))]
+    #[serde(rename(deserialize = "End date"))]
     end_date: Option<String>,
-    #[serde(rename(serialize = "end_time", deserialize = "End time"))]
+    #[serde(rename(deserialize = "End time"))]
     end_time: Option<String>,
-    #[serde(rename(serialize = "duration", deserialize = "Duration"))]
+    #[serde(rename(deserialize = "Duration"))]
     duration: Option<String>,
-    #[serde(rename(serialize = "tags", deserialize = "Tags"))]
+    #[serde(rename(deserialize = "Tags"))]
     tags: Option<String>,
-    #[serde(rename(serialize = "amount", deserialize = "Amount ()"))]
+    #[serde(rename(deserialize = "Amount ()"))]
     amount: Option<String>
 }
 
