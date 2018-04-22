@@ -13,34 +13,12 @@ use std::error::Error;
 
 #[derive(Debug,Deserialize)]
 struct TogglRecord {
-    #[serde(rename(deserialize = "User"))]
-    user: Option<String>,
-    #[serde(rename(deserialize = "Email"))]
-    email: Option<String>,
-    #[serde(rename(deserialize = "Client"))]
-    client: Option<String>,
-    #[serde(rename(deserialize = "Project"))]
-    project: Option<String>,
-    #[serde(rename(deserialize = "Task"))]
-    task: Option<String>,
     #[serde(rename(deserialize = "Description"))]
     description: Option<String>,
-    #[serde(rename(deserialize = "Billable"))]
-    billable: Option<String>,
     #[serde(rename(deserialize = "Start date"))]
     start_date: Option<String>,
-    #[serde(rename(deserialize = "Start time"))]
-    start_time: Option<String>,
-    #[serde(rename(deserialize = "End date"))]
-    end_date: Option<String>,
-    #[serde(rename(deserialize = "End time"))]
-    end_time: Option<String>,
     #[serde(rename(deserialize = "Duration"))]
     duration: Option<String>,
-    #[serde(rename(deserialize = "Tags"))]
-    tags: Option<String>,
-    #[serde(rename(deserialize = "Amount ()"))]
-    amount: Option<String>
 }
 
 #[derive(Debug, Serialize, Deserialize)]
