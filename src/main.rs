@@ -29,12 +29,11 @@ struct Bucket {
     time: String
 }
 
-
 fn main() {
     let mut date_map = HashMap::<String, Vec<Bucket>>::new();
     let mut i = 0;
 
-    for record in get_records().unwrap() {
+    for record in get_records(&get_options()).unwrap() {
         let hour_minute: Vec<i32> = match record.duration {
             Some(v) => {
                 v.split(":").take(2).map(|e| e.parse::<i32>().unwrap()).collect::<Vec<i32>>()
@@ -71,36 +70,43 @@ fn main() {
     println!("{}", serde_yaml::to_string(&date_map).unwrap());
 }
 
-fn get_records() -> Result<Vec<TogglRecord>, Box<Error>> {
+fn get_options() -> String {
     let args: Vec<String> = env::args().collect();
-    let program = args[0].clone();
-
+    let program = &args[0];
     let mut opts = Options::new();
+
     opts.optopt("f", "file", "toggl csv file", "FILE");
     opts.optflag("h", "help", "print this help menu");
 
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => { m },
-        Err(f) => { panic!(f.to_string()) }
+        Err(e) => { panic!(e.to_string()) }
     };
 
+    if matches.opt_present("h") {
+        print_usage(program, opts);
+        std::process::exit(0);
+    }
+
     match matches.opt_str("file") {
-        Some(file) => {
-            let reader = fs::File::open(file).expect("File not found.");
-            Ok(csv::Reader::from_reader(reader).deserialize().filter_map(|r| r.ok()).collect())
-        }
+        Some(file) => { file },
         None => {
-            print_usage(&program, opts);
+            print_usage(program, opts);
             std::process::exit(1);
         }
     }
 }
 
-fn print_msg(field: &str, row: i32) {
-    println!("Could not parse field {} for row {}.", field, row);
-}
-
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} FILE [options]", program);
     print!("{}", opts.usage(&brief));
+}
+
+fn get_records(file: &str) -> Result<Vec<TogglRecord>, Box<Error>> {
+    let reader = fs::File::open(file).expect("File not found.");
+    Ok(csv::Reader::from_reader(reader).deserialize().filter_map(|r| r.ok()).collect())
+}
+
+fn print_msg(field: &str, row: i32) {
+    println!("Could not parse field {} for row {}.", field, row);
 }
